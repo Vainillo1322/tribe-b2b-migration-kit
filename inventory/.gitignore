@@ -1,0 +1,7 @@
+# Secrets and local data - never commit or share
+credentials/
+data/
+reports/
+.venv/
+__pycache__/
+*.pyc

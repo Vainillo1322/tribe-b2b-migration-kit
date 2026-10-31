@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Migration Assistant · Thaura</title>
+<style>
+:root{
+  --cream:#F2E9D8; --card:#FFFDF9; --ink:#2B1B10; --muted:#8A7660;
+  --line:#E7D9C3; --beige:#E9DCC4; --maroon:#7C1D1D; --maroon-deep:#631313;
+  --gold:#C9930E; --gold-ink:#3F2C00; --gold-soft:#F4E7C3;
+  --user-bg:#F7EFE2;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:var(--cream); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:15px; line-height:1.55; min-height:100vh;
+  display:flex; flex-direction:column;
+}
+a{color:var(--maroon)}
+button{font:inherit;cursor:pointer}
+
+/* Header */
+header{
+  background:var(--card); border-bottom:1px solid var(--line);
+  padding:14px 22px; display:flex; align-items:center; gap:12px;
+  position:sticky; top:0; z-index:5;
+}
+.logo{
+  width:38px;height:38px;border-radius:9px;background:var(--maroon);
+  color:var(--card);display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:19px;flex-shrink:0;
+}
+.htxt h1{font-size:16px;font-weight:700;letter-spacing:.2px}
+.htxt p{font-size:12.5px;color:var(--muted)}
+.hspacer{flex:1}
+.keychip{
+  font-size:12px;padding:6px 12px;border-radius:20px;border:1px solid var(--line);
+  background:var(--gold-soft);color:var(--gold-ink);max-width:220px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.keychip.ok{border-color:var(--gold);font-weight:600}
+.keychip.missing{background:var(--beige);color:var(--muted);cursor:pointer}
+
+/* Chat area */
+main{flex:1;width:100%;max-width:780px;margin:0 auto;padding:22px 18px 130px;display:flex;flex-direction:column;gap:14px}
+
+.msg{display:flex;gap:10px;max-width:92%}
+.msg .avatar{
+  width:30px;height:30px;border-radius:8px;flex-shrink:0;margin-top:3px;
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;
+}
+.msg.thaura .avatar{background:var(--maroon);color:var(--card)}
+.msg.user{margin-left:auto;flex-direction:row-reverse}
+.msg.user .avatar{background:var(--beige);color:var(--muted)}
+.bubble{
+  border-radius:14px;padding:12px 15px;overflow-wrap:break-word;
+}
+.msg.thaura .bubble{background:var(--card);border:1px solid var(--line);border-top-left-radius:4px}
+.msg.user .bubble{background:var(--user-bg);border:1px solid var(--line);border-top-right-radius:4px}
+.bubble p{margin:0 0 .6em}
+.bubble p:last-child{margin-bottom:0}
+.bubble ul,.bubble ol{margin:.4em 0 .6em 1.2em}
+.bubble li{margin:.15em 0}
+.bubble code{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;
+  background:var(--gold-soft);color:var(--gold-ink);padding:1px 5px;border-radius:5px;
+}
+.bubble pre{
+  background:#2B1B10;color:#F2E9D8;border-radius:10px;padding:12px 14px;
+  overflow-x:auto;margin:.5em 0;font-size:12.5px;line-height:1.5;
+}
+.bubble pre code{background:none;color:inherit;padding:0}
+.bubble h4{margin:.5em 0 .3em;font-size:14px}
+.bubble strong{color:var(--maroon-deep)}
+
+.sysline{font-size:12.5px;color:var(--muted);text-align:center;padding:2px 0}
+.sysline b{color:var(--maroon)}
+
+.typing{display:inline-flex;gap:4px;padding:6px 2px}
+.typing span{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:blink 1.2s infinite}
+.typing span:nth-child(2){animation-delay:.2s}
+.typing span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
+
+/* Setup card */
+.setup{
+  background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:20px;max-width:560px;margin:12px auto 0;width:92%;
+}
+.setup h2{font-size:17px;margin-bottom:6px}
+.setup p.sub{color:var(--muted);font-size:13.5px;margin-bottom:14px}
+.setup label{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin:12px 0 4px;text-transform:uppercase;letter-spacing:.5px}
+.setup input[type=password],.setup input[type=text]{
+  width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;
+  font:inherit;background:var(--cream);color:var(--ink);
+}
+.setup input:focus{outline:2px solid var(--gold);outline-offset:1px}
+.setup .note{font-size:12px;color:var(--muted);margin-top:8px}
+.btn{
+  background:var(--maroon);color:var(--card);border:none;border-radius:10px;
+  padding:10px 20px;font-weight:700;font-size:14.5px;margin-top:14px;
+}
+.btn:hover{background:var(--maroon-deep)}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.ghost{background:var(--beige);color:var(--ink);font-weight:600}
+
+.ctxbox{display:flex;flex-wrap:wrap;gap:8px}
+.ctxbox label{
+  display:inline-flex;align-items:center;gap:6px;margin:0;
+  font-size:13px;font-weight:500;text-transform:none;letter-spacing:0;
+  background:var(--cream);border:1px solid var(--line);border-radius:20px;
+  padding:6px 12px;cursor:pointer;color:var(--ink);
+}
+.ctxbox input{accent-color:var(--maroon)}
+
+/* Suggestion chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.chips button{
+  background:var(--card);border:1px solid var(--line);border-radius:20px;
+  padding:8px 14px;font-size:13px;color:var(--ink);
+}
+.chips button:hover{border-color:var(--gold);background:var(--gold-soft)}
+
+/* Composer */
+.composer-wrap{
+  position:fixed;bottom:0;left:0;right:0;z-index:4;
+  background:linear-gradient(to top,var(--cream) 70%,transparent);
+  padding:14px 18px 18px;
+}
+.composer{
+  max-width:780px;margin:0 auto;background:var(--card);
+  border:1px solid var(--line);border-radius:14px;
+  display:flex;align-items:flex-end;gap:8px;padding:8px 8px 8px 14px;
+  box-shadow:0 4px 18px rgba(43,27,16,.07);
+}
+.composer textarea{
+  flex:1;border:none;resize:none;font:inherit;color:var(--ink);
+  background:transparent;max-height:120px;padding:8px 0;line-height:1.5;
+}
+.composer textarea:focus{outline:none}
+.composer .send{
+  background:var(--maroon);color:var(--card);border:none;border-radius:10px;
+  width:42px;height:42px;font-size:17px;flex-shrink:0;
+}
+.composer .send:disabled{opacity:.4;cursor:default}
+.composer-hint{max-width:780px;margin:6px auto 0;font-size:11.5px;color:var(--muted);text-align:center}
+.err{
+  background:#FBEAEA;border:1px solid #E4B6B6;color:var(--maroon-deep);
+  border-radius:10px;padding:10px 14px;font-size:13.5px;
+}
+@media(max-width:600px){
+  .htxt p{display:none}
+  .msg{max-width:100%}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">M</div>
+  <div class="htxt">
+    <h1>Migration Assistant</h1>
+    <p>Project manager for your move off Google Workspace · runs on the Thaura API</p>
+  </div>
+  <div class="hspacer"></div>
+  <button class="keychip missing" id="keychip" onclick="editKey()" title="Manage API key">No API key</button>
+  <a href="index.html" style="font-size:13px;font-weight:600;text-decoration:none" title="Back to the migration kit">← Kit</a>
+</header>
+
+<main id="chat"></main>
+
+<div class="composer-wrap">
+  <div class="composer">
+    <textarea id="input" rows="1" placeholder="Ask about your migration…" onkeydown="onKey(event)"></textarea>
+    <button class="send" id="sendbtn" onclick="send()">↑</button>
+  </div>
+  <div class="composer-hint">The key stays in this browser tab only. Nothing here deletes data; the plan never touches your source before verification.</div>
+</div>
+
+<div class="setup" id="setup" style="display:none">
+  <h2>Connect Thaura</h2>
+  <p class="sub">This demo calls the Thaura API straight from the browser. Paste a key from your account menu → API. In production these calls move behind your own server.</p>
+  <label>Thaura API key</label>
+  <input type="password" id="keyinput" placeholder="sk-…" autocomplete="off">
+  <label>Include in context</label>
+  <div class="ctxbox" id="ctxbox"></div>
+  <div class="note" id="keynote"></div>
+  <button class="btn" id="keysave" onclick="saveKey()">Start chat</button>
+</div>
+
+<script>
+const API_URL="https://backend.thaura.ai/v1/chat/completions";
+const MODEL="thaura";
+
+const SERVICES=[
+  ["drive","Drive"],["gmail","Gmail"],["calendar","Calendar"],
+  ["contacts","Contacts"],["photos","Photos"],["signin","Google sign-in"]
+];
+
+const SYSTEM=`You are the Migration Assistant inside a B2B migration kit that moves organizations off Google Workspace onto ethical, self-hostable alternatives. You act as the migration project manager: you help the user assess their current stack, draft a phased migration plan, prioritize steps, and give concrete technical guidance.
+
+Destination mapping this kit uses (from tribe-x.org's alternative-tools list):
+- Google Drive → Proton (encrypted storage, Swiss jurisdiction)
+- Gmail → Eureka (the tribe-x alternative for leaving Gmail)
+- Google Calendar → Nextcloud (CalDAV)
+- Google Contacts → Nextcloud (CardDAV)
+- Google Photos → Immich
+- Google sign-in / SSO → Authentik
+Tooling: rclone for files, Google Takeout + immich-go (or google-photos-takeout-helper) for Photos, ExifTool to repair metadata, Nextcloud CalDAV/CardDAV import for calendar and contacts.
+
+Method you always follow:
+1. Work in phases tagged reversible, checkpoint, or irreversible. Irreversible steps always need an explicit human confirmation gate, and you say so.
+2. The source (Google) is never modified or deleted until the destination is verified: checksums match, capture dates are covered, album/label structure is preserved, duplicates are accounted for. Only after all checks pass is anything "safe to delete" on Google's side, and even then you recommend keeping a cold backup.
+3. Never ask for passwords, tokens, cookies or app passwords in the conversation. Point to app-specific tokens or OAuth setup docs instead.
+4. Prefer orchestrating existing tools (rclone, immich-go, Nextcloud importers) over custom scripts; when you give commands, explain what each does.
+5. If the user hasn't told you their stack, ask what they use before planning.
+
+Style: concrete and plain. Short paragraphs. Numbered steps when sequencing. Tables only when comparing. Flag uncertainty honestly, especially anything unverified in the mapping above.`;
+
+let apiKey=null;
+let history=[];
+let busy=false;
+
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+
+function md(text){
+  // minimal renderer: fenced code, inline code, bold, headings, lists
+  const parts=[];
+  const blocks=text.split(/```/);
+  for(let i=0;i<blocks.length;i++){
+    if(i%2===1){
+      const t=blocks[i].replace(/^(\w*\n)?/,"");
+      parts.push("<pre><code>"+esc(t)+"</code></pre>");
+    }else{
+      let h=esc(blocks[i]);
+      h=h.replace(/`([^`\n]+)`/g,"<code>$1</code>");
+      h=h.replace(/\*\*([^*\n]+)\*\*/g,"<strong>$1</strong>");
+      h=h.replace(/^#{1,4} (.+)$/gm,"<h4>$1</h4>");
+      // group consecutive list lines
+      const lines=h.split("\n"); const out=[]; let list=null;
+      for(const ln of lines){
+        const m=ln.match(/^\s*[-*] (.+)$/);
+        const om=ln.match(/^\s*\d+\. (.+)$/);
+        if(m||om){
+          const tag=om?"ol":"ul";
+          if(list!==tag){ if(list)out.push("</"+list+">"); out.push("<"+tag+">"); list=tag; }
+          out.push("<li>"+(m?m[1]:om[1])+"</li>");
+        }else{
+          if(list){ out.push("</"+list+">"); list=null; }
+          out.push(ln===""?"":"<p>"+ln+"</p>");
+        }
+      }
+      if(list)out.push("</"+list+">");
+      parts.push(out.join(""));
+    }
+  }
+  return parts.join("");
+}
+
+function addMsg(role,html,cls){
+  const wrap=document.createElement("div");
+  wrap.className="msg "+role;
+  wrap.innerHTML=`<div class="avatar">${role==="user"?"You":"T"}</div><div class="bubble ${cls||""}">${html}</div>`;
+  document.getElementById("chat").appendChild(wrap);
+  window.scrollTo({top:1e9,behavior:"instant"});
+  return wrap.querySelector(".bubble");
+}
+
+function addSys(html){
+  const d=document.createElement("div");
+  d.className="sysline"; d.innerHTML=html;
+  document.getElementById("chat").appendChild(d);
+}
+
+function chips(){
+  const c=document.createElement("div");
+  c.className="chips";
+  c.innerHTML=`
+    <button onclick="quick('Assess my stack')">Assess my stack</button>
+    <button onclick="quick('Draft a phased migration plan')">Draft a migration plan</button>
+    <button onclick="quick('What should I do first?')">Prioritize next steps</button>
+    <button onclick="quick('How do I export Google Photos so albums and dates survive?')">Google Photos export help</button>`;
+  document.getElementById("chat").appendChild(c);
+}
+function quick(t){document.getElementById("input").value=t;send()}
+
+/* context checkboxes */
+function buildCtx(){
+  const box=document.getElementById("ctxbox");
+  const saved=JSON.parse(sessionStorage.getItem("mk_ctx")||"null")||SERVICES.map(s=>s[0]);
+  box.innerHTML=SERVICES.map(([k,n])=>
+    `<label><input type="checkbox" value="${k}" ${saved.includes(k)?"checked":""}> ${n}</label>`).join("");
+}
+function ctxSel(){
+  return [...document.querySelectorAll("#ctxbox input:checked")].map(i=>i.value);
+}
+
+/* key management */
+function keyState(){
+  return sessionStorage.getItem("mk_key")||null;
+}
+function refreshChip(){
+  const chip=document.getElementById("keychip");
+  if(apiKey){chip.textContent="Key set · "+apiKey.slice(0,7)+"…";chip.classList.add("ok");chip.classList.remove("missing");}
+  else{chip.textContent="No API key";chip.classList.remove("ok");chip.classList.add("missing");}
+}
+function editKey(){
+  document.getElementById("setup").style.display="block";
+  document.getElementById("keyinput").focus();
+  document.getElementById("setup").scrollIntoView({behavior:"smooth"});
+}
+function saveKey(){
+  const v=document.getElementById("keyinput").value.trim();
+  if(!v){document.getElementById("keynote").textContent="Paste a key first (account menu → API → API Keys).";return}
+  apiKey=v;
+  sessionStorage.setItem("mk_key",v);
+  sessionStorage.setItem("mk_ctx",JSON.stringify(ctxSel()));
+  document.getElementById("setup").style.display="none";
+  document.getElementById("keynote").textContent="";
+  document.getElementById("keyinput").value="";
+  refreshChip();
+  const chat=document.getElementById("chat");
+  chat.innerHTML="";
+  addSys("Connected to <b>Thaura</b>. Say what you want to plan.");
+  chips();
+  const el=document.getElementById("input"); el.focus();
+}
+
+function onKey(e){
+  if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send()}
+}
+
+function autoGrow(t){t.style.height="auto";t.style.height=Math.min(t.scrollHeight,120)+"px"}
+document.getElementById("input").addEventListener("input",e=>autoGrow(e.target));
+
+function contextBlock(){
+  const sel=ctxSel();
+  if(!sel.length)return "";
+  const names=sel.map(k=>(SERVICES.find(s=>s[0]===k)||[k,k])[1]);
+  return `\n\nThe user selected these services as their current stack to migrate: ${names.join(", ")}. Take that into account; still ask for anything material you don't know (org size, where the data lives, technical level).`;
+}
+
+async function send(){
+  if(busy)return;
+  const ta=document.getElementById("input");
+  const text=ta.value.trim();
+  if(!text)return;
+  if(!apiKey){editKey();return}
+  ta.value="";autoGrow(ta);
+  addMsg("user",esc(text));
+  history.push({role:"user",content:text});
+  document.querySelectorAll(".chips").forEach(c=>c.remove());
+  await run();
+}
+
+async function run(){
+  busy=true;
+  document.getElementById("sendbtn").disabled=true;
+  const bubble=addMsg("thaura",'<div class="typing"><span></span><span></span><span></span></div>');
+  try{
+    const res=await fetch(API_URL,{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+apiKey},
+      body:JSON.stringify({
+        model:MODEL,
+        messages:[{role:"system",content:SYSTEM+contextBlock()},...history],
+        stream:true
+      })
+    });
+    if(!res.ok){
+      const body=await res.text().catch(()=> "");
+      let msg=`API error ${res.status}`;
+      try{const j=JSON.parse(body);if(j.error&&j.error.message)msg+=`: ${j.error.message}`}catch(_){}
+      if(res.status===401)msg+=". Check the key (account menu → API → API Keys).";
+      if(res.status===402)msg+=". The prepaid API balance is empty.";
+      if(res.status===429)msg+=". Rate limit hit; wait a moment and try again.";
+      throw new Error(msg);
+    }
+    bubble.innerHTML="";
+    let acc="";
+    const reader=res.body.getReader();
+    const dec=new TextDecoder();
+    let buf="";
+    while(true){
+      const {done,value}=await reader.read();
+      if(done)break;
+      buf+=dec.decode(value,{stream:true});
+      const lines=buf.split("\n");
+      buf=lines.pop();
+      for(const line of lines){
+        const t=line.trim();
+        if(!t.startsWith("data:"))continue;
+        const payload=t.slice(5).trim();
+        if(payload==="[DONE]")continue;
+        try{
+          const j=JSON.parse(payload);
+          if(j.error)throw new Error(j.error.message||"stream error");
+          const d=j.choices&&j.choices[0]&&j.choices[0].delta;
+          if(d&&d.content){acc+=d.content;bubble.innerHTML=md(acc);window.scrollTo({top:1e9,behavior:"instant"})}
+        }catch(err){
+          if(err.message&&err.message!=="Unexpected end of JSON input")console.warn(err);
+        }
+      }
+    }
+    if(!acc)acc="(empty reply — try again)";
+    bubble.innerHTML=md(acc);
+    history.push({role:"assistant",content:acc});
+  }catch(err){
+    bubble.outerHTML=`<div class="err" style="margin:0 auto">${esc(err.message||"Request failed — check the network console.")}</div>`;
+  }finally{
+    busy=false;
+    document.getElementById("sendbtn").disabled=false;
+    if(history.length&&history[history.length-1].role==="user"&&!document.querySelector(".chips"))chips();
+  }
+}
+
+/* init */
+apiKey=keyState();
+buildCtx();
+if(!apiKey){
+  const chat=document.getElementById("chat");
+  chat.innerHTML="";
+  addSys("Welcome. The assistant helps <b>plan, prioritize and troubleshoot</b> a Google Workspace migration. It never touches your data and never asks for passwords.");
+  editKey();
+}else{
+  refreshChip();
+  addSys("Connected to <b>Thaura</b>. Say what you want to plan.");
+  chips();
+}
+</script>
+</body>
+</html>

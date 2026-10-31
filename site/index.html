@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Migration Kit — stack manifest</title>
+<style>
+  :root{
+    --cream:#F2E9D8;
+    --card:#FFFDF9;
+    --ink:#2B1B10;
+    --muted:#8A7660;
+    --line:#E7D9C3;
+    --beige:#E9DCC4;
+    --maroon:#7C1D1D;
+    --maroon-deep:#631313;
+    --gold:#C9930E;
+    --gold-ink:#3F2C00;
+    --gold-soft:#F4E7C3;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{transition:none!important;animation:none!important} }
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:"Segoe UI","Open Sans",-apple-system,"Helvetica Neue",Arial,system-ui,sans-serif;
+    font-size:16px;
+    line-height:1.55;
+  }
+  .wrap{max-width:820px;margin:0 auto;padding:0 22px}
+  a{color:var(--maroon)}
+  a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
+    outline:2px solid var(--maroon);outline-offset:2px;
+  }
+
+  /* ---------- header ---------- */
+  header.site{padding:22px 0 0;position:relative}
+  .chatlink{
+    position:absolute;top:8px;right:0;font-size:13px;font-weight:700;
+    color:var(--maroon);text-decoration:none;background:var(--gold-soft);
+    border:1px solid var(--gold);border-radius:20px;padding:6px 14px;
+  }
+  .chatlink:hover{background:var(--gold);color:#fff}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand .logo{
+    width:34px;height:34px;border-radius:9px;background:var(--maroon);
+    color:#fff;font-weight:800;font-size:15px;
+    display:inline-flex;align-items:center;justify-content:center;flex:none;
+  }
+  .brand h1{font-size:20px;font-weight:800;letter-spacing:-0.01em}
+  .brand h1 span{font-weight:400;color:var(--muted);font-size:16px}
+  .stepcount{margin-top:18px;text-align:right;font-size:13px;color:var(--muted)}
+  nav.steps{display:flex;gap:7px;margin-top:6px}
+  nav.steps .step{flex:1;min-width:0}
+  nav.steps .bar{display:block;height:8px;border-radius:999px;background:var(--beige)}
+  nav.steps .lbl{
+    display:block;margin-top:7px;font-size:13px;color:var(--muted);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  nav.steps .step.fill .bar{background:var(--maroon)}
+  nav.steps .step.fill .lbl{color:var(--ink)}
+  nav.steps .step.now .lbl{color:var(--maroon);font-weight:700}
+  @media (max-width:560px){ nav.steps .lbl{font-size:11.5px} }
+
+  main{padding:26px 0 70px}
+  .lede{font-size:27px;font-weight:800;letter-spacing:-0.015em;line-height:1.25}
+  .sub{color:var(--muted);margin-top:10px;max-width:56ch}
+  .lede-note{font-size:13px;color:var(--muted);margin-top:8px}
+
+  /* ---------- step 1: fork cards ---------- */
+  .fork{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:28px}
+  .fork button{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    font:inherit;text-align:left;padding:24px 22px;cursor:pointer;
+    display:flex;flex-direction:column;gap:9px;min-height:168px;position:relative;
+    transition:border-color .15s;
+  }
+  .fork button:hover{border-color:var(--maroon)}
+  .fork .chip{
+    position:absolute;top:16px;right:16px;
+    background:var(--gold);color:var(--gold-ink);
+    font-size:12.5px;font-weight:700;padding:4px 12px;border-radius:999px;
+  }
+  .fork .choice{font-weight:800;font-size:18px;max-width:16ch;line-height:1.3}
+  .fork .expl{font-size:14px;color:var(--muted)}
+  .fork .go{font-size:14px;font-weight:700;color:var(--maroon);text-decoration:underline;margin-top:auto}
+  @media (max-width:640px){ .fork{grid-template-columns:1fr} }
+
+  section.stage{display:none;margin-top:8px}
+  section.stage.active{display:block}
+
+  /* ---------- shared bits ---------- */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px}
+  .note{
+    background:var(--gold-soft);border-radius:10px;padding:12px 16px;
+    font-size:14px;color:var(--ink);max-width:62ch;
+  }
+  .actions{margin-top:24px;display:flex;gap:12px;flex-wrap:wrap}
+  button.primary{
+    background:var(--maroon);color:#fff;border:none;border-radius:10px;
+    font:inherit;font-weight:700;padding:12px 24px;cursor:pointer;
+  }
+  button.primary:hover{background:var(--maroon-deep)}
+  button.ghost{
+    background:var(--card);border:1px solid var(--line);color:var(--ink);
+    font:inherit;font-weight:600;padding:12px 20px;border-radius:10px;cursor:pointer;
+  }
+  button.ghost:hover{border-color:var(--maroon)}
+  .hint{font-size:13px;color:var(--muted);margin-top:12px;max-width:60ch}
+
+  /* ---------- step 2: manual inventory ---------- */
+  .fieldlist{margin-top:26px;padding:6px 0}
+  .fieldrow{
+    display:grid;grid-template-columns:1fr 130px 110px;gap:16px;align-items:center;
+    padding:13px 18px;border-bottom:1px solid var(--line);
+  }
+  .fieldrow:first-child{border-radius:14px 14px 0 0}
+  .fieldrow:last-child{border-bottom:none;border-radius:0 0 14px 14px}
+  .fieldlist .card{overflow:hidden}
+  .fieldrow .svc{font-weight:700}
+  .fieldrow .svc small{display:block;font-weight:400;color:var(--muted);font-size:13px}
+  .fieldrow input[type=number],.fieldrow select{
+    font:inherit;padding:9px 12px;border:1px solid var(--line);border-radius:10px;
+    background:#fff;width:100%;color:var(--ink);
+  }
+  @media (max-width:640px){ .fieldrow{grid-template-columns:1fr 1fr} .fieldrow .svc{grid-column:1/-1} }
+
+  /* ---------- step 2: wizard ---------- */
+  .wizard{margin-top:26px}
+  .wizard .q{display:none}
+  .wizard .q.on{display:block}
+  .q .qtext{font-weight:800;font-size:19px;margin-bottom:14px}
+  .opts{display:grid;gap:10px;max-width:540px}
+  .opts button{
+    text-align:left;font:inherit;padding:14px 18px;cursor:pointer;
+    border:1px solid var(--line);border-radius:12px;background:var(--card);
+    transition:border-color .15s;
+  }
+  .opts button:hover{border-color:var(--maroon);background:#FBF3E3}
+
+  /* ---------- step 3: assessment ---------- */
+  .tablecard{overflow-x:auto}
+  table.manifest{width:100%;border-collapse:collapse;font-size:15px;background:var(--card)}
+  table.manifest caption{
+    text-align:left;font-size:13px;color:var(--muted);padding-bottom:10px;
+  }
+  table.manifest th{
+    text-align:left;font-size:13.5px;font-weight:700;
+    background:var(--beige);padding:10px 14px;color:var(--ink);
+  }
+  table.manifest td{border-top:1px solid var(--line);padding:11px 14px;vertical-align:top}
+  table.manifest td.effort{font-weight:700}
+  .eff-high{color:var(--maroon)} .eff-med{color:var(--gold)} .eff-low{color:var(--muted)}
+  .done-block{display:none;margin-top:30px;text-align:left}
+  .done-block.show{display:block;animation:popin .35s cubic-bezier(.2,1.2,.4,1)}
+  @keyframes popin{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
+  .done-block .ring{
+    width:64px;height:64px;border-radius:50%;background:var(--maroon);
+    color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;
+  }
+  .done-block h2{font-size:24px;font-weight:800;margin-top:16px}
+  .done-block .note{margin-top:12px}
+  @media (max-width:700px){
+    table.manifest,table.manifest tbody,table.manifest tr,table.manifest td{display:block}
+    table.manifest th{display:none}
+    table.manifest tr{border-bottom:1px solid var(--line);padding:10px 14px;background:var(--card)}
+    table.manifest td{border-top:none;border-bottom:1px dashed var(--line);padding:5px 0}
+    table.manifest td::before{content:attr(data-l);font-size:12px;color:var(--muted);display:block}
+  }
+
+  /* ---------- step 4: plan ---------- */
+  .phase{
+    background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:16px 18px;margin-top:12px;
+  }
+  .phase .ph{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline}
+  .phase h3{font-size:16.5px;font-weight:800}
+  .phase .tag{font-size:12px;font-weight:700;padding:3px 12px;border-radius:999px}
+  .tag.rev{background:var(--gold);color:var(--gold-ink);border:none}
+  .tag.chk{color:var(--maroon);border:1.5px solid var(--maroon)}
+  .tag.irr{background:var(--maroon);color:#fff;border:none}
+  .phase p{font-size:14px;color:var(--muted);margin-top:5px;max-width:60ch}
+  .phase code{
+    font-family:Menlo,Consolas,monospace;font-size:12.5px;
+    background:var(--gold-soft);color:var(--gold-ink);
+    padding:3px 9px;border-radius:8px;display:inline-block;margin-top:8px;
+  }
+
+  .keybox{margin-top:28px;padding:20px;border-radius:14px}
+  .keybox label{font-weight:800;font-size:15px;display:block;margin-bottom:7px}
+  .keybox input{
+    font:inherit;padding:10px 14px;border:1px solid var(--line);border-radius:10px;
+    width:100%;max-width:420px;background:#fff;color:var(--ink);
+  }
+  .keybox .note{margin-top:10px}
+  .api-msg{font-size:14px;margin-top:10px;display:none}
+  .api-msg.err{color:var(--maroon);display:block;font-weight:600}
+  .api-msg.ok{color:var(--maroon);display:block;font-weight:600}
+
+  /* ---------- step 5: divested ---------- */
+  .divested{margin-top:26px;display:grid;gap:12px}
+  .divested .row{
+    background:var(--card);border:1px solid var(--line);border-radius:12px;
+    display:grid;grid-template-columns:1fr 32px 1fr;gap:12px;padding:16px 18px;align-items:start;
+  }
+  .divested .from,.divested .to{font-size:15px}
+  .divested .from small,.divested .to small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+  .divested .arrow{color:var(--maroon);font-weight:800;text-align:center}
+  .es-chip{
+    display:inline-block;font-size:12px;font-weight:700;padding:2px 10px;
+    border:1.5px solid currentColor;border-radius:999px;white-space:nowrap;
+  }
+  .draft{color:var(--muted);font-weight:800}
+  @media (max-width:560px){ .divested .row{grid-template-columns:1fr 24px 1fr;padding:14px} }
+
+  footer.site{border-top:1px solid var(--line);padding:20px 0 46px;font-size:13px;color:var(--muted)}
+  footer.site p{max-width:64ch;margin-top:7px}
+  footer.site code{font-family:Menlo,Consolas,monospace}
+a.migbtn,button.migbtn{display:inline-block;padding:4px 10px;border-radius:8px;border:1px solid #2e2e2e;color:#fff;background:#1c1c1c;text-decoration:none;font-size:.85rem;cursor:pointer}
+button.migbtn.soon{opacity:.45;cursor:default}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">M</span>
+      <h1>Migration Kit <span>× Kenzy × Thaura</span></h1>
+    </div>
+    <div class="stepcount" id="stepcount">Step 1 of 4</div>
+    <nav class="steps" aria-label="Progress">
+      <span class="step fill now" id="s1"><span class="bar"></span><span class="lbl">Start</span></span>
+      <span class="step" id="s2"><span class="bar"></span><span class="lbl">Inventory</span></span>
+      <span class="step" id="s3"><span class="bar"></span><span class="lbl">Assess</span></span>
+      <span class="step" id="s4"><span class="bar"></span><span class="lbl">Done</span></span>
+    </nav>
+    <a href="assistant.html" class="chatlink" title="Plan with Thaura">Plan with Thaura ↗</a>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- STEP 1: FORK -->
+  <section class="stage active" id="stage-1">
+    <h2 class="lede">Which Google tools does your organization run on, and what would it take to leave?</h2>
+    <p class="sub">This kit inventories your stack, scores the migration effort per service, and produces a phased plan that keeps your original data untouched until the new one is verified.</p>
+    <p class="lede-note">Discovery can run the real inventory against your Google account (read-only) in the Assess step.</p>
+    <div class="fork" role="group" aria-label="How well do you know your stack?">
+      <button onclick="goto(2); mode='known'">
+        <span class="chip">Direct</span>
+        <span class="choice">We know our stack</span>
+        <span class="expl">You can list the services and rough volumes. Enter them and get the assessment straight away.</span>
+        <span class="go">Enter inventory</span>
+      </button>
+      <button onclick="goto('2w'); mode='unknown'">
+        <span class="chip">Guided</span>
+        <span class="choice">We don't know</span>
+        <span class="expl">Four quick questions identify your stack, then the inventory analyzer measures it from your account.</span>
+        <span class="go">Run discovery</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- STEP 2 (known): manual inventory -->
+  <section class="stage" id="stage-2">
+    <h2 class="lede">Your inventory</h2>
+    <p class="sub">Tick the services your organization uses and enter rough volumes. Estimates are fine: the assessment scores effort from shape, not precision.</p>
+    <div class="fieldlist card" id="manual-list"></div>
+    <p class="hint">Leave a volume at 0 if you don't use the service. Keep and Chat have no migration API: they're flagged for manual review.</p>
+    <div class="actions">
+      <button class="primary" onclick="buildAssessment('manual')">Build assessment</button>
+      <button class="ghost" onclick="goto(1)">&larr; Back</button>
+    </div>
+  </section>
+
+  <!-- STEP 2 (unknown): wizard -->
+  <section class="stage" id="stage-2w">
+    <h2 class="lede">Discovery</h2>
+    <p><button class="ghost" onclick="goto(1)">&larr; Back</button></p>
+    <div class="wizard" id="wizard">
+      <div class="q on" data-q="0">
+        <p class="qtext">How do you sign in to your work email?</p>
+        <div class="opts">
+          <button onclick="wiz(0,'gmail');">A Gmail or Google Workspace address</button>
+          <button onclick="wiz(0,'other');">Another provider</button>
+          <button onclick="wiz(0,'unsure');">Not sure</button>
+        </div>
+      </div>
+      <div class="q" data-q="1">
+        <p class="qtext">Where do your photos live?</p>
+        <div class="opts">
+          <button onclick="wiz(1,'photos');">Google Photos</button>
+          <button onclick="wiz(1,'nophotos');">Somewhere else</button>
+          <button onclick="wiz(1,'unsure');">Not sure</button>
+        </div>
+      </div>
+      <div class="q" data-q="2">
+        <p class="qtext">Is this a personal account or a company Workspace?</p>
+        <div class="opts">
+          <button onclick="wiz(2,'personal');">Personal account</button>
+          <button onclick="wiz(2,'workspace');">Company Workspace</button>
+          <button onclick="wiz(2,'unsure');">Not sure</button>
+        </div>
+      </div>
+      <div class="q" data-q="3">
+        <p class="qtext">Roughly how much data are we talking about?</p>
+        <div class="opts">
+          <button onclick="wiz(3,'small');">Under 5 GB</button>
+          <button onclick="wiz(3,'medium');">5–50 GB</button>
+          <button onclick="wiz(3,'large');">Over 50 GB</button>
+          <button onclick="wiz(3,'unsure');">No idea</button>
+        </div>
+      </div>
+      <div class="q" data-q="4" id="wiz-result">
+        <p class="qtext" id="wiz-verdict"></p>
+        <p class="sub" id="wiz-advice"></p>
+        <div class="actions">
+          <button class="primary" onclick="buildAssessment('inventory')">Run the real inventory</button>
+          <button class="ghost" onclick="goto(2); mode='known'">Enter volumes myself</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 3: assessment -->
+  <section class="stage" id="stage-3">
+    <h2 class="lede">Stack assessment</h2>
+    <p class="sub" id="assess-src"></p>
+    <div class="card tablecard">
+      <table class="manifest">
+        <caption style="padding:14px 14px 4px">Impact matrix · effort is migration work per service, not storage size</caption>
+        <thead><tr><th>Service</th><th>Volume</th><th>Effort</th><th>EthiScore</th><th>Destination</th><th>Migrate</th></tr></thead>
+        <tbody id="assess-body"></tbody>
+      </table>
+    </div>
+    <div class="done-block" id="done-block">
+      <div class="ring" aria-hidden="true">✓</div>
+      <h2>Stack manifest complete</h2>
+      <div class="note">Nothing has been deleted. Your original stack stays live and untouched until the replacement is verified.</div>
+    </div>
+    <div class="actions">
+      <button class="primary" onclick="goto(5)">See the divested stack</button>
+      <button class="ghost" onclick="mode==='unknown'?goto('2w'):goto(2)">&larr; Back</button>
+      <button class="ghost" onclick="goto(1)">Start over</button>
+    </div>
+  </section>
+
+  <!-- STEP 5: divested -->
+  <section class="stage" id="stage-5">
+    <h2 class="lede">The divested stack</h2>
+    <p class="sub">What you'd run instead, on hardware you control. This is the demo environment we stand up for the pilot: same tasks, your infrastructure.</p>
+    <div class="divested" id="divested-list"></div>
+    <p class="hint">Sandbox profile: Immich, Nextcloud, Proton and Authentik sign-in, seeded with anonymized sample data shaped like your assessment.</p>
+    <div class="actions">
+      <button class="ghost" onclick="goto(1)">Start a new assessment</button>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <p><strong>Demo build.</strong> Volumes are sample data until the local inventory analyzer (Drive, Gmail, Calendar, Contacts, Photos, Tasks, metadata only, nothing leaves your machine) is connected. The plan always ends in verification: source data is untouched until checksums and dates pass. Destination mappings follow the tribe-x.org alternative tools list: Drive → Proton, Gmail → Eureka.</p>
+    <p>EthiScore column and divested-stack scores come from the EthiScore dataset (v2026-10-31-draft); entries marked * are draft scores added for this kit, and Eureka is a draft placeholder pending verified data. The dataset is also served from this site at <code>/api/v1/scores.json</code>, the endpoint the EthiScore browser extension fetches.</p>
+  </div>
+</footer>
+
+<script>
+"use strict";
+const ETHISCORE={"version":"2026-10-31-draft","site":"https://ethiscore.example.org","categories":{"data_security":"Data security","privacy":"Privacy","global_south_accessibility":"Global South accessibility","legal_compliance":"Legal compliance","data_storage_location":"Data storage location","eco_friendliness":"Eco friendliness","language_inclusivity":"Language inclusivity","cultural_sensitivity":"Cultural sensitivity","affordability":"Affordability","ad_free":"Ad free","state_surveillance_resistance":"State surveillance resistance","business_model_military_detachment":"Business model military detachment","funding_independance":"Funding independance","decolonial_alignment":"Decolonial alignment","login_signup_compatibility":"Login/signup compatibility","user_friendliness":"User friendliness","ease_of_migration":"Ease of migration","accessibility_disability":"Accessibility","leaders_diversity":"Leaders diversity","human_wellbeing_impact":"Human wellbeing impact"},"tools":[{"id":"google-meet","name":"Google Meet","category":"Video conferencing","domains":["meet.google.com"],"score":3.2,"tags":["Colonial state","Surveillance"],"scores":{"data_security":6.5,"privacy":4,"global_south_accessibility":6,"legal_compliance":5,"data_storage_location":2,"eco_friendliness":4,"language_inclusivity":6,"cultural_sensitivity":4,"affordability":5,"ad_free":8,"state_surveillance_resistance":2,"business_model_military_detachment":4,"funding_independance":3,"decolonial_alignment":2,"login_signup_compatibility":7,"user_friendliness":8,"ease_of_migration":3,"accessibility_disability":6,"leaders_diversity":4,"human_wellbeing_impact":4},"alternatives":["jitsi-meet","bigbluebutton"]},{"id":"zoom","name":"Zoom","category":"Video conferencing","domains":["zoom.us","zoom.com"],"score":3.8,"tags":["Surveillance"],"scores":{"data_security":6,"privacy":3.5,"global_south_accessibility":6,"legal_compliance":5,"data_storage_location":3,"eco_friendliness":4.5,"language_inclusivity":6,"cultural_sensitivity":4.5,"affordability":5.5,"ad_free":8,"state_surveillance_resistance":3,"business_model_military_detachment":4,"funding_independance":3.5,"decolonial_alignment":2.5,"login_signup_compatibility":7,"user_friendliness":8,"ease_of_migration":4,"accessibility_disability":6,"leaders_diversity":4.5,"human_wellbeing_impact":4},"alternatives":["jitsi-meet","bigbluebutton"]},{"id":"jitsi-meet","name":"Jitsi Meet","category":"Video conferencing","domains":["meet.jit.si","jitsi.org"],"score":7.0,"tags":["Open source"],"scores":{"data_security":8,"privacy":8,"global_south_accessibility":7,"legal_compliance":7,"data_storage_location":7,"eco_friendliness":7,"language_inclusivity":7,"cultural_sensitivity":6,"affordability":8,"ad_free":9,"state_surveillance_resistance":8,"business_model_military_detachment":8,"funding_independance":7,"decolonial_alignment":8,"login_signup_compatibility":7,"user_friendliness":7,"ease_of_migration":6.5,"accessibility_disability":7,"leaders_diversity":6,"human_wellbeing_impact":7},"alternatives":[]},{"id":"bigbluebutton","name":"BigBlueButton","category":"Video conferencing","domains":["bigbluebutton.org"],"score":6.8,"tags":["Open source"],"scores":{"data_security":7.5,"privacy":7,"global_south_accessibility":6.5,"legal_compliance":7,"data_storage_location":7,"eco_friendliness":6.5,"language_inclusivity":6.5,"cultural_sensitivity":6,"affordability":7,"ad_free":9,"state_surveillance_resistance":7.5,"business_model_military_detachment":8,"funding_independance":7,"decolonial_alignment":7,"login_signup_compatibility":7,"user_friendliness":6.5,"ease_of_migration":6,"accessibility_disability":7,"leaders_diversity":6,"human_wellbeing_impact":6.5},"alternatives":[]},{"id":"slack","name":"Slack","category":"Team chat","domains":["slack.com"],"score":4.4,"tags":["Surveillance"],"scores":{"data_security":6.5,"privacy":4,"global_south_accessibility":5,"legal_compliance":5.5,"data_storage_location":3,"eco_friendliness":5,"language_inclusivity":6,"cultural_sensitivity":5,"affordability":4.5,"ad_free":8,"state_surveillance_resistance":3,"business_model_military_detachment":4,"funding_independance":4,"decolonial_alignment":3,"login_signup_compatibility":7,"user_friendliness":8,"ease_of_migration":4,"accessibility_disability":6,"leaders_diversity":5,"human_wellbeing_impact":4.5},"alternatives":["element"]},{"id":"element","name":"Element (Matrix)","category":"Team chat","domains":["element.io","app.element.io","matrix.org"],"score":7.6,"tags":["Open source","Federated"],"scores":{"data_security":8,"privacy":8,"global_south_accessibility":7,"legal_compliance":7,"data_storage_location":8,"eco_friendliness":7,"language_inclusivity":7,"cultural_sensitivity":7,"affordability":7,"ad_free":9,"state_surveillance_resistance":8,"business_model_military_detachment":8,"funding_independance":7,"decolonial_alignment":8,"login_signup_compatibility":6.5,"user_friendliness":7,"ease_of_migration":6.5,"accessibility_disability":7,"leaders_diversity":6.5,"human_wellbeing_impact":7},"alternatives":[]},{"id":"github","name":"GitHub","category":"Code hosting","domains":["github.com"],"score":4.1,"tags":["Colonial state"],"scores":{"data_security":7,"privacy":5,"global_south_accessibility":5,"legal_compliance":6,"data_storage_location":3,"eco_friendliness":5,"language_inclusivity":6,"cultural_sensitivity":5,"affordability":6,"ad_free":8,"state_surveillance_resistance":4,"business_model_military_detachment":4,"funding_independance":5,"decolonial_alignment":2.5,"login_signup_compatibility":7,"user_friendliness":7,"ease_of_migration":4,"accessibility_disability":6,"leaders_diversity":5,"human_wellbeing_impact":5},"alternatives":["codeberg"]},{"id":"codeberg","name":"Codeberg","category":"Code hosting","domains":["codeberg.org"],"score":8.4,"tags":["Open source","Non-profit"],"scores":{"data_security":8.5,"privacy":8,"global_south_accessibility":7,"legal_compliance":8,"data_storage_location":8,"eco_friendliness":8,"language_inclusivity":7,"cultural_sensitivity":7,"affordability":8,"ad_free":10,"state_surveillance_resistance":9,"business_model_military_detachment":9,"funding_independance":8,"decolonial_alignment":9,"login_signup_compatibility":7,"user_friendliness":7,"ease_of_migration":7,"accessibility_disability":7,"leaders_diversity":7,"human_wellbeing_impact":8},"alternatives":[]},{"id":"google-drive","name":"Google Drive","category":"Cloud storage","domains":["drive.google.com"],"score":3.1,"tags":["Colonial state","Surveillance"],"scores":{"data_security":6.5,"privacy":4.5,"global_south_accessibility":6,"legal_compliance":5,"data_storage_location":2,"eco_friendliness":4,"language_inclusivity":6.5,"cultural_sensitivity":4.5,"affordability":5.5,"ad_free":8,"state_surveillance_resistance":2,"business_model_military_detachment":4,"funding_independance":3,"decolonial_alignment":2,"login_signup_compatibility":7,"user_friendliness":8,"ease_of_migration":3,"accessibility_disability":6.5,"leaders_diversity":4,"human_wellbeing_impact":4},"alternatives":["proton"],"draft":true},{"id":"google-gmail","name":"Gmail","category":"Email","domains":["mail.google.com","gmail.com"],"score":3.3,"tags":["Colonial state","Surveillance"],"scores":{"data_security":7,"privacy":4,"global_south_accessibility":6,"legal_compliance":5,"data_storage_location":2,"eco_friendliness":4,"language_inclusivity":6.5,"cultural_sensitivity":4.5,"affordability":5.5,"ad_free":8,"state_surveillance_resistance":2,"business_model_military_detachment":4,"funding_independance":3,"decolonial_alignment":2,"login_signup_compatibility":7,"user_friendliness":8,"ease_of_migration":3.5,"accessibility_disability":6.5,"leaders_diversity":4,"human_wellbeing_impact":4},"alternatives":["eureka"],"draft":true},{"id":"google-calendar","name":"Google Calendar","category":"Calendar","domains":["calendar.google.com"],"score":3.4,"tags":["Colonial state","Surveillance"],"scores":{"data_security":6.5,"privacy":4,"global_south_accessibility":6,"legal_compliance":5,"data_storage_location":2,"eco_friendliness":4,"language_inclusivity":6.5,"cultural_sensitivity":4.5,"affordability":5.5,"ad_free":7,"state_surveillance_resistance":2,"business_model_military_detachment":4,"funding_independance":3,"decolonial_alignment":2,"login_signup_compatibility":7,"user_friendliness":8,"ease_of_migration":4,"accessibility_disability":6.5,"leaders_diversity":4,"human_wellbeing_impact":4},"alternatives":["nextcloud"],"draft":true},{"id":"google-contacts","name":"Google Contacts","category":"Contacts","domains":["contacts.google.com"],"score":3.5,"tags":["Colonial state","Surveillance"],"scores":{"data_security":6.5,"privacy":4,"global_south_accessibility":6,"legal_compliance":5,"data_storage_location":2,"eco_friendliness":4,"language_inclusivity":6.5,"cultural_sensitivity":4.5,"affordability":5.5,"ad_free":7,"state_surveillance_resistance":2,"business_model_military_detachment":4,"funding_independance":3,"decolonial_alignment":2,"login_signup_compatibility":7,"user_friendliness":8,"ease_of_migration":4.5,"accessibility_disability":6.5,"leaders_diversity":4,"human_wellbeing_impact":4},"alternatives":["nextcloud"],"draft":true},{"id":"google-photos","name":"Google Photos","category":"Photo storage","domains":["photos.google.com"],"score":3.0,"tags":["Colonial state","Surveillance"],"scores":{"data_security":6.5,"privacy":3.5,"global_south_accessibility":6,"legal_compliance":5,"data_storage_location":2,"eco_friendliness":4,"language_inclusivity":6.5,"cultural_sensitivity":4.5,"affordability":5.5,"ad_free":7,"state_surveillance_resistance":2,"business_model_military_detachment":4,"funding_independance":3,"decolonial_alignment":2,"login_signup_compatibility":7,"user_friendliness":8.5,"ease_of_migration":3,"accessibility_disability":6.5,"leaders_diversity":4,"human_wellbeing_impact":4},"alternatives":["immich"],"draft":true},{"id":"nextcloud","name":"Nextcloud","category":"Self-hosted suite","domains":["nextcloud.com"],"score":8.2,"tags":["Open source","Self-hosted","Federated"],"scores":{"data_security":7.5,"privacy":8,"global_south_accessibility":6.5,"legal_compliance":7.5,"data_storage_location":8,"eco_friendliness":7,"language_inclusivity":7.5,"cultural_sensitivity":7,"affordability":7.5,"ad_free":10,"state_surveillance_resistance":8,"business_model_military_detachment":9,"funding_independance":8,"decolonial_alignment":8,"login_signup_compatibility":7,"user_friendliness":7,"ease_of_migration":7,"accessibility_disability":7,"leaders_diversity":7,"human_wellbeing_impact":7.5},"alternatives":[],"draft":true},{"id":"immich","name":"Immich","category":"Self-hosted photos","domains":["immich.app"],"score":8.0,"tags":["Open source","Self-hosted"],"scores":{"data_security":7.5,"privacy":8,"global_south_accessibility":6.5,"legal_compliance":7.5,"data_storage_location":8,"eco_friendliness":7,"language_inclusivity":7.5,"cultural_sensitivity":7,"affordability":7.5,"ad_free":10,"state_surveillance_resistance":8,"business_model_military_detachment":9,"funding_independance":8,"decolonial_alignment":8,"login_signup_compatibility":7,"user_friendliness":7.5,"ease_of_migration":7,"accessibility_disability":7,"leaders_diversity":7,"human_wellbeing_impact":7.5},"alternatives":[],"draft":true},{"id":"proton","name":"Proton","category":"Encrypted suite","domains":["proton.me","protonmail.com"],"score":7.8,"tags":["Encrypted","Swiss jurisdiction"],"scores":{"data_security":7.5,"privacy":8,"global_south_accessibility":6.5,"legal_compliance":7.5,"data_storage_location":7.5,"eco_friendliness":7.5,"language_inclusivity":7.5,"cultural_sensitivity":7,"affordability":7.5,"ad_free":10,"state_surveillance_resistance":8.5,"business_model_military_detachment":9,"funding_independance":8,"decolonial_alignment":8,"login_signup_compatibility":7,"user_friendliness":7.5,"ease_of_migration":6.5,"accessibility_disability":7,"leaders_diversity":7,"human_wellbeing_impact":7.5},"alternatives":[],"draft":true},{"id":"eureka","name":"Eureka","category":"Email","domains":["eureka.example.org"],"score":7.5,"tags":["Draft entry","Unverified"],"scores":{"data_security":7.5,"privacy":8,"global_south_accessibility":6.5,"legal_compliance":7.5,"data_storage_location":8,"eco_friendliness":7,"language_inclusivity":7.5,"cultural_sensitivity":7,"affordability":7.5,"ad_free":10,"state_surveillance_resistance":8,"business_model_military_detachment":9,"funding_independance":8,"decolonial_alignment":8,"login_signup_compatibility":7,"user_friendliness":7,"ease_of_migration":6.5,"accessibility_disability":7,"leaders_diversity":7,"human_wellbeing_impact":7.5},"alternatives":[],"draft":true},{"id":"stalwart","name":"Stalwart Mail","category":"Self-hosted email","domains":["stalw.art"],"score":7.9,"tags":["Open source","Self-hosted"],"scores":{"data_security":7.5,"privacy":8,"global_south_accessibility":6.5,"legal_compliance":7.5,"data_storage_location":8,"eco_friendliness":7,"language_inclusivity":7.5,"cultural_sensitivity":7,"affordability":7.5,"ad_free":10,"state_surveillance_resistance":8,"business_model_military_detachment":9,"funding_independance":8,"decolonial_alignment":8,"login_signup_compatibility":7,"user_friendliness":7,"ease_of_migration":6,"accessibility_disability":7,"leaders_diversity":7,"human_wellbeing_impact":7.5},"alternatives":[],"draft":true},{"id":"authentik","name":"Authentik","category":"Identity / SSO","domains":["goauthentik.io"],"score":8.1,"tags":["Open source","Self-hosted"],"scores":{"data_security":7.5,"privacy":8,"global_south_accessibility":6.5,"legal_compliance":7.5,"data_storage_location":8,"eco_friendliness":7,"language_inclusivity":7.5,"cultural_sensitivity":7,"affordability":7.5,"ad_free":10,"state_surveillance_resistance":8,"business_model_military_detachment":9,"funding_independance":8,"decolonial_alignment":8,"login_signup_compatibility":7,"user_friendliness":6.5,"ease_of_migration":6.5,"accessibility_disability":7,"leaders_diversity":7,"human_wellbeing_impact":7.5},"alternatives":[],"draft":true}]};
+const state = { mode:null, answers:{}, volumes:null, planSource:"builtin" };
+let mode = null;
+
+const SERVICES = [
+  {key:"drive",    name:"Drive",     unit:"files",      effort:"Medium", dest:"Proton",               es:"google-drive",    note:"docs, sheets, PDFs, binaries"},
+  {key:"gmail",    name:"Gmail",     unit:"messages",   effort:"Low",    dest:"Eureka",               es:"google-gmail",    note:"mailbox size and labels"},
+  {key:"calendar", name:"Calendar",  unit:"events",     effort:"Low",    dest:"Nextcloud or Proton",  es:"google-calendar", note:"last year plus upcoming"},
+  {key:"contacts", name:"Contacts",  unit:"contacts",   effort:"Low",    dest:"CardDAV (Nextcloud)",  es:"google-contacts", note:"count only"},
+  {key:"photos",   name:"Photos",    unit:"items",      effort:"High",   dest:"Immich",               es:"google-photos",   note:"albums and dates rebuilt from Takeout metadata"},
+  {key:"tasks",    name:"Tasks",     unit:"tasks",      effort:"Low",    dest:"Nextcloud Tasks",      es:null,              note:"lists and pending"},
+  {key:"keep",     name:"Keep",      unit:"notes",      effort:"Manual", dest:"no API: review by hand",es:null,             note:"manual verification"},
+  {key:"chat",     name:"Chat",      unit:"messages",   effort:"Manual", dest:"no API: review by hand",es:null,             note:"manual verification"},
+];
+
+/* ---------- EthiScore integration ---------- */
+/* Dataset served from this same site at /api/v1/scores.json (the endpoint the
+   browser extension fetches). The copy below is bundled so the page works
+   offline and before the first fetch. New entries are draft scores. */
+const ES = (() => {
+  const byId = new Map(ETHISCORE.tools.map(t => [t.id, t]));
+  const band = s => s < 4 ? {k:"critical",label:"Critical",c:"#B3261E"} : s < 7 ? {k:"caution",label:"Caution",c:"#8A5A00"} : {k:"aligned",label:"Aligned",c:"#3E6B1F"};
+  const cat = s => s <= 3 ? "critical" : s <= 6 ? "caution" : "aligned";
+  const describe = id => {
+    const t = byId.get(id);
+    if (!t) return null;
+    const cats = ETHISCORE.categories;
+    const weakest = Object.entries(t.scores).map(([k,v])=>({k,label:cats[k]??k,v}))
+      .sort((a,b)=>a.v-b.v).slice(0,3).map(w=>w.label);
+    const alts = (t.alternatives||[]).map(a=>byId.get(a)).filter(Boolean)
+      .map(a=>({id:a.id,name:a.name,score:a.score}));
+    return {id:t.id,name:t.name,score:t.score,band:band(t.score),weakest,alts,draft:!!t.draft};
+  };
+  return {byId,band,cat,describe};
+})();
+function esCell(id){
+  const d = ES.describe(id);
+  if(!d) return '<td data-l="EthiScore"><span style="color:var(--muted)">no score yet</span></td>';
+  const title = "Weakest: "+d.weakest.join(", ")
+    +(d.alts.length? " · Alternatives: "+d.alts.map(a=>a.name+" ("+a.score.toFixed(1)+")").join(", "):"")
+    +(d.draft? " · draft score":"");
+  return `<td data-l="EthiScore" title="${title.replace(/"/g,"&quot;")}">
+    <span class="es-chip" style="color:${d.band.c}">${d.score.toFixed(1)} ${d.band.label}</span>${d.draft?' <span class="draft">*</span>':''}</td>`;
+}
+function divestPriority(){
+  if(!state.volumes) return "";
+  const used = SERVICES.filter(s=>s.es && (state.volumes[s.key]||0)>0)
+    .map(s=>({name:s.name, ...ES.describe(s.es)}))
+    .filter(d=>d).sort((a,b)=>a.score-b.score);
+  if(!used.length) return "";
+  return "Divestment priority (lowest EthiScore first): "
+    + used.map(d=>`${d.name} (${d.score.toFixed(1)})`).join(" → ")
+    + ". The full copy phase runs them in this order, worst tools out first.";
+}
+
+const SAMPLE = {drive:2400, gmail:18000, calendar:900, contacts:420, photos:31000, tasks:60, keep:120, chat:5600};
+
+/* ---------- navigation ---------- */
+const ORDER = ["1","2","2w","3","5"];
+function goto(stage){
+  if(stage==="2w"){ show("2w"); setStep(2); return; }
+  show(String(stage));
+  setStep(stage==="2w"?2:(stage==="1"?1:ORDER.indexOf(String(stage))+1));
+}
+function show(id){
+  document.querySelectorAll(".stage").forEach(s=>s.classList.remove("active"));
+  document.getElementById("stage-"+id).classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function setStep(n){
+  document.getElementById("stepcount").textContent = "Step "+n+" of 4";
+  document.querySelectorAll("nav.steps .step").forEach((s,i)=>{
+    const stepNo = i+1;
+    s.classList.toggle("fill", stepNo <= n);
+    s.classList.toggle("now", stepNo === n);
+  });
+}
+
+/* ---------- manual inventory ---------- */
+function renderManual(){
+  const el = document.getElementById("manual-list");
+  el.innerHTML = SERVICES.map(s=>`
+    <div class="fieldrow">
+      <div class="svc">${s.name}<small>${s.note}</small></div>
+      <input type="number" min="0" id="v-${s.key}" placeholder="0" aria-label="${s.name} volume in ${s.unit}">
+      <select id="u-${s.key}" aria-label="${s.name} unit">
+        <option>count</option><option>GB</option>
+      </select>
+    </div>`).join("");
+}
+function fillSample(){
+  SERVICES.forEach(s=>{
+    const inp=document.getElementById("v-"+s.key);
+    if(inp) inp.value = SAMPLE[s.key];
+  });
+}
+function readManual(){
+  const v={};
+  SERVICES.forEach(s=>{
+    const inp=document.getElementById("v-"+s.key);
+    v[s.key]= inp && inp.value!=="" ? Math.max(0,parseInt(inp.value,10)||0) : 0;
+  });
+  return v;
+}
+
+/* ---------- wizard ---------- */
+function wiz(i,answer){
+  state.answers["q"+i]=answer;
+  const next=document.querySelector(`.q[data-q="${i+1}"]`);
+  if(next){
+    document.querySelector(`.q[data-q="${i}"]`).classList.remove("on");
+    next.classList.add("on");
+  }else{ wizResult(); }
+}
+function wizResult(){
+  const a=state.answers;
+  const workspace = a.q2==="workspace";
+  const photos = a.q1==="photos";
+  const big = a.q3==="large"||a.q3==="medium";
+  document.getElementById("wiz-verdict").textContent =
+    workspace ? "Company Workspace detected: same methodology, admin credentials in production."
+              : "Personal Google account detected.";
+  document.getElementById("wiz-advice").textContent =
+    photos && big ? "Photos are the heavy item here: albums and capture dates are the part that breaks in a naive copy, so the plan leans on the Photos pipeline. The inventory analyzer measures your real volumes; this demo continues with sample data shaped like your answers."
+    : "The inventory analyzer measures your real volumes from your account, metadata only, nothing leaves your machine. This demo continues with sample data shaped like your answers.";
+  document.querySelector('.q[data-q="3"]').classList.remove("on");
+  document.getElementById("wiz-result").classList.add("on");
+}
+
+/* ---------- assessment ---------- */
+async function buildAssessment(source){
+  state.mode = source;
+  if(source==="inventory"){
+    document.getElementById("assess-src").textContent = "Running the inventory against your Google account (read-only); this can take a minute…";
+    show("3"); setStep(3);
+    try{
+      const res=await fetch("/api/inventory",{method:"POST"});
+      const j=await res.json();
+      if(j.error==="signin"){
+        document.getElementById("assess-src").innerHTML =
+          'Nothing to assess until you sign in. <a href="/migrate">Sign in with Google</a> (read-only), then run the inventory again.';
+        return;
+      }
+      if(j.error){
+        document.getElementById("assess-src").textContent = "Inventory failed: "+(j.message||j.error);
+        return;
+      }
+      const vols={keep:0,chat:0};
+      (j.rows||[]).forEach(r=>{
+        const svc=(r.service||"").toLowerCase();
+        if(!(svc in vols)) vols[svc]=0;
+        if((r.metric||"").endsWith("bytes")) return; // counts first; sizes add to detail
+        vols[svc]=(vols[svc]||0)+(r.value||0);
+      });
+      state.volumes=vols;
+    }catch(e){
+      document.getElementById("assess-src").textContent = "Inventory failed: "+e;
+      return;
+    }
+  } else {
+    state.volumes = source==="manual" ? readManual() : SAMPLE;
+  }
+  const rows = SERVICES.map(s=>{
+    const v = state.volumes[s.key]||0;
+    const vol = v===0 ? "not used" : v.toLocaleString("en-US")+" "+(s.unit==="items"?"items":s.unit);
+    const cls = s.effort==="High"?"eff-high":s.effort==="Medium"?"eff-med":"eff-low";
+    return `<tr>
+      <td data-l="Service"><strong>${s.name}</strong></td>
+      <td data-l="Volume">${vol}</td>
+      <td data-l="Effort" class="effort ${cls}">${s.effort}</td>
+      ${esCell(s.es)}
+      <td data-l="Destination">${s.dest}</td>
+      ${migCell(s.key)}
+    </tr>`;
+  }).join("");
+  document.getElementById("assess-body").innerHTML = rows;
+  document.getElementById("assess-src").textContent =
+    source==="manual" ? "From the volumes you entered." : source==="inventory" ? "From the live inventory run against your Google account." : "From the discovery answers (rough volumes; run the real inventory for exact counts).";
+  show("3"); setStep(3);
+  const db=document.getElementById("done-block");
+  db.classList.remove("show"); void db.offsetWidth; db.classList.add("show");
+}
+
+/* ---------- plan ---------- */
+const PHASES = [
+  {n:"1", t:"Inventory", tag:"reversible", tool:"inventory.py run",
+   d:"Metadata-only scan per service: counts, sizes, date ranges. No file names, no content, nothing leaves the machine."},
+  {n:"2", t:"Dry run on a sample", tag:"reversible", tool:"immich-go / rclone --dry-run",
+   d:"A few hundred items through the full pipeline to surface renames, duplicates and date loss before the real copy."},
+  {n:"3", t:"Full copy", tag:"reversible", tool:"immich-go · rclone · ExifTool",
+   d:"Per-service transfers into the new destinations. Sidecar metadata is written back as real EXIF dates. Source stays live throughout."},
+  {n:"4", t:"Verification", tag:"reversible", tool:"checksums · date/album coverage",
+   d:"Checksums between source and destination, capture-date coverage, album structure comparison, duplicate detection."},
+  {n:"5", t:"Confirmation checkpoint", tag:"checkpoint", tool:"human sign-off",
+   d:"Nothing proceeds past this point without an explicit yes from you. The plan can describe it; only you can pass it."},
+  {n:"6", t:"Decommission", tag:"irreversible", tool:"final Takeout archive · account closure",
+   d:"Only after verification passes: final offline Takeout, exports beyond photos, then account closure, one confirmed step at a time."},
+];
+function migCell(key){
+  return key==="drive"
+    ? '<td data-l="Migrate"><a class="migbtn" href="/migrate">Migrate &rarr;</a></td>'
+    : '<td data-l="Migrate"><button class="migbtn soon" disabled title="Coming soon">Soon</button></td>';
+}
+
+function renderPlan(){
+  const prio = divestPriority();
+  document.getElementById("plan-list").innerHTML =
+    (prio ? `<p class="hint" id="priority">${prio}</p>` : "")
+    + PHASES.map(p=>`
+    <div class="phase">
+      <div class="ph"><h3>${p.n}. ${p.t}</h3><span class="tag ${p.tag==="reversible"?"rev":p.tag==="checkpoint"?"chk":"irr"}">${p.tag}</span></div>
+      <p>${p.d}</p><code>${p.tool}</code>
+    </div>`).join("");
+}
+
+/* ---------- Thaura API ---------- */
+async function thauraPlan(){
+  const msg=document.getElementById("api-msg");
+  const key=document.getElementById("apikey").value.trim();
+  msg.className="api-msg"; msg.textContent="";
+  if(!key){ msg.className="api-msg err"; msg.textContent="No key given: paste a Thaura API key first, or use the built-in plan."; return; }
+  const btn=event.target; btn.disabled=true; btn.textContent="Asking Thaura…";
+  try{
+    const res=await fetch("https://backend.thaura.ai/v1/chat/completions",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+key},
+      body:JSON.stringify({
+        model:"thaura",
+        messages:[
+          {role:"system",content:"You are a migration planning assistant. Given an inventory of Google services with volumes, output JSON: {\"phases\":[{\"n\":string,\"t\":string,\"tag\":\"reversible|checkpoint|irreversible\",\"tool\":string,\"d\":string}]}. Six phases: inventory, dry run, full copy, verification, confirmation checkpoint, decommission. Source data is never deleted before verification passes. Tools: inventory.py, immich-go, rclone, ExifTool, checksums."},
+          {role:"user",content:JSON.stringify({inventory:SERVICES.map(s=>({service:s.name,volume:state.volumes[s.key]||0,effort:s.effort,destination:s.dest})),mode:state.mode})}
+        ],
+        response_format:{type:"json_object"},
+        temperature:0.4
+      })
+    });
+    if(!res.ok) throw new Error("API returned "+res.status);
+    const data=await res.json();
+    const parsed=JSON.parse(data.choices[0].message.content);
+    const phases=parsed.phases||[];
+    if(!phases.length) throw new Error("plan came back empty");
+    document.getElementById("plan-list").innerHTML = phases.map(p=>`
+      <div class="phase">
+        <div class="ph"><h3>${p.n}. ${p.t}</h3><span class="tag ${p.tag==="reversible"?"rev":p.tag==="checkpoint"?"chk":"irr"}">${p.tag}</span></div>
+        <p>${p.d}</p><code>${p.tool}</code>
+      </div>`).join("");
+    state.planSource="thaura";
+    msg.className="api-msg ok"; msg.textContent="Plan regenerated by Thaura from your assessment.";
+  }catch(err){
+    msg.className="api-msg err";
+    msg.textContent="Live call failed ("+err.message+"). The built-in plan below stands. In production these calls run server-side, not from the browser.";
+  }finally{
+    btn.disabled=false; btn.textContent="Regenerate plan with Thaura";
+  }
+}
+
+/* ---------- divested ---------- */
+const DIVESTED=[
+  {from:"Drive", f:"docs, sheets, files", to:"Proton", t:"encrypted storage, Swiss jurisdiction (tribe-x mapping)", es:"proton"},
+  {from:"Gmail", f:"mail and labels", to:"Eureka", t:"the tribe-x alternative for leaving Gmail", es:"eureka"},
+  {from:"Calendar + Contacts", f:"schedules and people", to:"Nextcloud (CalDAV/CardDAV)", t:"syncs with phone and desktop", es:"nextcloud"},
+  {from:"Photos", f:"albums, faces, dates", to:"Immich", t:"timeline, faces and albums rebuilt from Takeout metadata", es:"immich"},
+  {from:"Google sign-in", f:"accounts and access", to:"Authentik", t:"single sign-on you administer", es:"authentik"},
+];
+function renderDivested(){
+  document.getElementById("divested-list").innerHTML = DIVESTED.map(d=>{
+    const info = d.es ? ES.describe(d.es) : null;
+    const chip = info
+      ? `<span class="es-chip" style="color:${info.band.c}" title="Weakest: ${info.weakest.join(", ")}">${info.score.toFixed(1)} ${info.band.label}${info.draft?" *":""}</span>`
+      : "";
+    return `
+    <div class="row">
+      <div class="from"><strong>${d.from}</strong><small>${d.f}</small></div>
+      <div class="arrow">→</div>
+      <div class="to"><strong>${d.to}</strong> ${chip}<small>${d.t}</small></div>
+    </div>`;
+  }).join("");
+}
+
+renderManual();
+renderDivested();
+</script>
+</body>
+</html>

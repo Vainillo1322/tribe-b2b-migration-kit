@@ -1,0 +1,745 @@
+{
+  "version": "2026-10-31-draft",
+  "site": "https://ethiscore.example.org",
+  "categories": {
+    "data_security": "Data security",
+    "privacy": "Privacy",
+    "global_south_accessibility": "Global South accessibility",
+    "legal_compliance": "Legal compliance",
+    "data_storage_location": "Data storage location",
+    "eco_friendliness": "Eco friendliness",
+    "language_inclusivity": "Language inclusivity",
+    "cultural_sensitivity": "Cultural sensitivity",
+    "affordability": "Affordability",
+    "ad_free": "Ad free",
+    "state_surveillance_resistance": "State surveillance resistance",
+    "business_model_military_detachment": "Business model military detachment",
+    "funding_independance": "Funding independance",
+    "decolonial_alignment": "Decolonial alignment",
+    "login_signup_compatibility": "Login/signup compatibility",
+    "user_friendliness": "User friendliness",
+    "ease_of_migration": "Ease of migration",
+    "accessibility_disability": "Accessibility",
+    "leaders_diversity": "Leaders diversity",
+    "human_wellbeing_impact": "Human wellbeing impact"
+  },
+  "tools": [
+    {
+      "id": "google-meet",
+      "name": "Google Meet",
+      "category": "Video conferencing",
+      "domains": [
+        "meet.google.com"
+      ],
+      "score": 3.2,
+      "tags": [
+        "Colonial state",
+        "Surveillance"
+      ],
+      "scores": {
+        "data_security": 6.5,
+        "privacy": 4,
+        "global_south_accessibility": 6,
+        "legal_compliance": 5,
+        "data_storage_location": 2,
+        "eco_friendliness": 4,
+        "language_inclusivity": 6,
+        "cultural_sensitivity": 4,
+        "affordability": 5,
+        "ad_free": 8,
+        "state_surveillance_resistance": 2,
+        "business_model_military_detachment": 4,
+        "funding_independance": 3,
+        "decolonial_alignment": 2,
+        "login_signup_compatibility": 7,
+        "user_friendliness": 8,
+        "ease_of_migration": 3,
+        "accessibility_disability": 6,
+        "leaders_diversity": 4,
+        "human_wellbeing_impact": 4
+      },
+      "alternatives": [
+        "jitsi-meet",
+        "bigbluebutton"
+      ]
+    },
+    {
+      "id": "zoom",
+      "name": "Zoom",
+      "category": "Video conferencing",
+      "domains": [
+        "zoom.us",
+        "zoom.com"
+      ],
+      "score": 3.8,
+      "tags": [
+        "Surveillance"
+      ],
+      "scores": {
+        "data_security": 6,
+        "privacy": 3.5,
+        "global_south_accessibility": 6,
+        "legal_compliance": 5,
+        "data_storage_location": 3,
+        "eco_friendliness": 4.5,
+        "language_inclusivity": 6,
+        "cultural_sensitivity": 4.5,
+        "affordability": 5.5,
+        "ad_free": 8,
+        "state_surveillance_resistance": 3,
+        "business_model_military_detachment": 4,
+        "funding_independance": 3.5,
+        "decolonial_alignment": 2.5,
+        "login_signup_compatibility": 7,
+        "user_friendliness": 8,
+        "ease_of_migration": 4,
+        "accessibility_disability": 6,
+        "leaders_diversity": 4.5,
+        "human_wellbeing_impact": 4
+      },
+      "alternatives": [
+        "jitsi-meet",
+        "bigbluebutton"
+      ]
+    },
+    {
+      "id": "jitsi-meet",
+      "name": "Jitsi Meet",
+      "category": "Video conferencing",
+      "domains": [
+        "meet.jit.si",
+        "jitsi.org"
+      ],
+      "score": 7.0,
+      "tags": [
+        "Open source"
+      ],
+      "scores": {
+        "data_security": 8,
+        "privacy": 8,
+        "global_south_accessibility": 7,
+        "legal_compliance": 7,
+        "data_storage_location": 7,
+        "eco_friendliness": 7,
+        "language_inclusivity": 7,
+        "cultural_sensitivity": 6,
+        "affordability": 8,
+        "ad_free": 9,
+        "state_surveillance_resistance": 8,
+        "business_model_military_detachment": 8,
+        "funding_independance": 7,
+        "decolonial_alignment": 8,
+        "login_signup_compatibility": 7,
+        "user_friendliness": 7,
+        "ease_of_migration": 6.5,
+        "accessibility_disability": 7,
+        "leaders_diversity": 6,
+        "human_wellbeing_impact": 7
+      },
+      "alternatives": []
+    },
+    {
+      "id": "bigbluebutton",
+      "name": "BigBlueButton",
+      "category": "Video conferencing",
+      "domains": [
+        "bigbluebutton.org"
+      ],
+      "score": 6.8,
+      "tags": [
+        "Open source"
+      ],
+      "scores": {
+        "data_security": 7.5,
+        "privacy": 7,
+        "global_south_accessibility": 6.5,
+        "legal_compliance": 7,
+        "data_storage_location": 7,
+        "eco_friendliness": 6.5,
+        "language_inclusivity": 6.5,
+        "cultural_sensitivity": 6,
+        "affordability": 7,
+        "ad_free": 9,
+        "state_surveillance_resistance": 7.5,
+        "business_model_military_detachment": 8,
+        "funding_independance": 7,
+        "decolonial_alignment": 7,
+        "login_signup_compatibility": 7,
+        "user_friendliness": 6.5,
+        "ease_of_migration": 6,
+        "accessibility_disability": 7,
+        "leaders_diversity": 6,
+        "human_wellbeing_impact": 6.5
+      },
+      "alternatives": []
+    },
+    {
+      "id": "slack",
+      "name": "Slack",
+      "category": "Team chat",
+      "domains": [
+        "slack.com"
+      ],
+      "score": 4.4,
+      "tags": [
+        "Surveillance"
+      ],
+      "scores": {
+        "data_security": 6.5,
+        "privacy": 4,
+        "global_south_accessibility": 5,
+        "legal_compliance": 5.5,
+        "data_storage_location": 3,
+        "eco_friendliness": 5,
+        "language_inclusivity": 6,
+        "cultural_sensitivity": 5,
+        "affordability": 4.5,
+        "ad_free": 8,
+        "state_surveillance_resistance": 3,
+        "business_model_military_detachment": 4,
+        "funding_independance": 4,
+        "decolonial_alignment": 3,
+        "login_signup_compatibility": 7,
+        "user_friendliness": 8,
+        "ease_of_migration": 4,
+        "accessibility_disability": 6,
+        "leaders_diversity": 5,
+        "human_wellbeing_impact": 4.5
+      },
+      "alternatives": [
+        "element"
+      ]
+    },
+    {
+      "id": "element",
+      "name": "Element (Matrix)",
+      "category": "Team chat",
+      "domains": [
+        "element.io",
+        "app.element.io",
+        "matrix.org"
+      ],
+      "score": 7.6,
+      "tags": [
+        "Open source",
+        "Federated"
+      ],
+      "scores": {
+        "data_security": 8,
+        "privacy": 8,
+        "global_south_accessibility": 7,
+        "legal_compliance": 7,
+        "data_storage_location": 8,
+        "eco_friendliness": 7,
+        "language_inclusivity": 7,
+        "cultural_sensitivity": 7,
+        "affordability": 7,
+        "ad_free": 9,
+        "state_surveillance_resistance": 8,
+        "business_model_military_detachment": 8,
+        "funding_independance": 7,
+        "decolonial_alignment": 8,
+        "login_signup_compatibility": 6.5,
+        "user_friendliness": 7,
+        "ease_of_migration": 6.5,
+        "accessibility_disability": 7,
+        "leaders_diversity": 6.5,
+        "human_wellbeing_impact": 7
+      },
+      "alternatives": []
+    },
+    {
+      "id": "github",
+      "name": "GitHub",
+      "category": "Code hosting",
+      "domains": [
+        "github.com"
+      ],
+      "score": 4.1,
+      "tags": [
+        "Colonial state"
+      ],
+      "scores": {
+        "data_security": 7,
+        "privacy": 5,
+        "global_south_accessibility": 5,
+        "legal_compliance": 6,
+        "data_storage_location": 3,
+        "eco_friendliness": 5,
+        "language_inclusivity": 6,
+        "cultural_sensitivity": 5,
+        "affordability": 6,
+        "ad_free": 8,
+        "state_surveillance_resistance": 4,
+        "business_model_military_detachment": 4,
+        "funding_independance": 5,
+        "decolonial_alignment": 2.5,
+        "login_signup_compatibility": 7,
+        "user_friendliness": 7,
+        "ease_of_migration": 4,
+        "accessibility_disability": 6,
+        "leaders_diversity": 5,
+        "human_wellbeing_impact": 5
+      },
+      "alternatives": [
+        "codeberg"
+      ]
+    },
+    {
+      "id": "codeberg",
+      "name": "Codeberg",
+      "category": "Code hosting",
+      "domains": [
+        "codeberg.org"
+      ],
+      "score": 8.4,
+      "tags": [
+        "Open source",
+        "Non-profit"
+      ],
+      "scores": {
+        "data_security": 8.5,
+        "privacy": 8,
+        "global_south_accessibility": 7,
+        "legal_compliance": 8,
+        "data_storage_location": 8,
+        "eco_friendliness": 8,
+        "language_inclusivity": 7,
+        "cultural_sensitivity": 7,
+        "affordability": 8,
+        "ad_free": 10,
+        "state_surveillance_resistance": 9,
+        "business_model_military_detachment": 9,
+        "funding_independance": 8,
+        "decolonial_alignment": 9,
+        "login_signup_compatibility": 7,
+        "user_friendliness": 7,
+        "ease_of_migration": 7,
+        "accessibility_disability": 7,
+        "leaders_diversity": 7,
+        "human_wellbeing_impact": 8
+      },
+      "alternatives": []
+    },
+    {
+      "id": "google-drive",
+      "name": "Google Drive",
+      "category": "Cloud storage",
+      "domains": [
+        "drive.google.com"
+      ],
+      "score": 3.1,
+      "tags": [
+        "Colonial state",
+        "Surveillance"
+      ],
+      "scores": {
+        "data_security": 6.5,
+        "privacy": 4.5,
+        "global_south_accessibility": 6,
+        "legal_compliance": 5,
+        "data_storage_location": 2,
+        "eco_friendliness": 4,
+        "language_inclusivity": 6.5,
+        "cultural_sensitivity": 4.5,
+        "affordability": 5.5,
+        "ad_free": 8,
+        "state_surveillance_resistance": 2,
+        "business_model_military_detachment": 4,
+        "funding_independance": 3,
+        "decolonial_alignment": 2,
+        "login_signup_compatibility": 7,
+        "user_friendliness": 8,
+        "ease_of_migration": 3,
+        "accessibility_disability": 6.5,
+        "leaders_diversity": 4,
+        "human_wellbeing_impact": 4
+      },
+      "alternatives": [
+        "proton"
+      ],
+      "draft": true
+    },
+    {
+      "id": "google-gmail",
+      "name": "Gmail",
+      "category": "Email",
+      "domains": [
+        "mail.google.com",
+        "gmail.com"
+      ],
+      "score": 3.3,
+      "tags": [
+        "Colonial state",
+        "Surveillance"
+      ],
+      "scores": {
+        "data_security": 7,
+        "privacy": 4,
+        "global_south_accessibility": 6,
+        "legal_compliance": 5,
+        "data_storage_location": 2,
+        "eco_friendliness": 4,
+        "language_inclusivity": 6.5,
+        "cultural_sensitivity": 4.5,
+        "affordability": 5.5,
+        "ad_free": 8,
+        "state_surveillance_resistance": 2,
+        "business_model_military_detachment": 4,
+        "funding_independance": 3,
+        "decolonial_alignment": 2,
+        "login_signup_compatibility": 7,
+        "user_friendliness": 8,
+        "ease_of_migration": 3.5,
+        "accessibility_disability": 6.5,
+        "leaders_diversity": 4,
+        "human_wellbeing_impact": 4
+      },
+      "alternatives": [
+        "eureka"
+      ],
+      "draft": true
+    },
+    {
+      "id": "google-calendar",
+      "name": "Google Calendar",
+      "category": "Calendar",
+      "domains": [
+        "calendar.google.com"
+      ],
+      "score": 3.4,
+      "tags": [
+        "Colonial state",
+        "Surveillance"
+      ],
+      "scores": {
+        "data_security": 6.5,
+        "privacy": 4,
+        "global_south_accessibility": 6,
+        "legal_compliance": 5,
+        "data_storage_location": 2,
+        "eco_friendliness": 4,
+        "language_inclusivity": 6.5,
+        "cultural_sensitivity": 4.5,
+        "affordability": 5.5,
+        "ad_free": 7,
+        "state_surveillance_resistance": 2,
+        "business_model_military_detachment": 4,
+        "funding_independance": 3,
+        "decolonial_alignment": 2,
+        "login_signup_compatibility": 7,
+        "user_friendliness": 8,
+        "ease_of_migration": 4,
+        "accessibility_disability": 6.5,
+        "leaders_diversity": 4,
+        "human_wellbeing_impact": 4
+      },
+      "alternatives": [
+        "nextcloud"
+      ],
+      "draft": true
+    },
+    {
+      "id": "google-contacts",
+      "name": "Google Contacts",
+      "category": "Contacts",
+      "domains": [
+        "contacts.google.com"
+      ],
+      "score": 3.5,
+      "tags": [
+        "Colonial state",
+        "Surveillance"
+      ],
+      "scores": {
+        "data_security": 6.5,
+        "privacy": 4,
+        "global_south_accessibility": 6,
+        "legal_compliance": 5,
+        "data_storage_location": 2,
+        "eco_friendliness": 4,
+        "language_inclusivity": 6.5,
+        "cultural_sensitivity": 4.5,
+        "affordability": 5.5,
+        "ad_free": 7,
+        "state_surveillance_resistance": 2,
+        "business_model_military_detachment": 4,
+        "funding_independance": 3,
+        "decolonial_alignment": 2,
+        "login_signup_compatibility": 7,
+        "user_friendliness": 8,
+        "ease_of_migration": 4.5,
+        "accessibility_disability": 6.5,
+        "leaders_diversity": 4,
+        "human_wellbeing_impact": 4
+      },
+      "alternatives": [
+        "nextcloud"
+      ],
+      "draft": true
+    },
+    {
+      "id": "google-photos",
+      "name": "Google Photos",
+      "category": "Photo storage",
+      "domains": [
+        "photos.google.com"
+      ],
+      "score": 3.0,
+      "tags": [
+        "Colonial state",
+        "Surveillance"
+      ],
+      "scores": {
+        "data_security": 6.5,
+        "privacy": 3.5,
+        "global_south_accessibility": 6,
+        "legal_compliance": 5,
+        "data_storage_location": 2,
+        "eco_friendliness": 4,
+        "language_inclusivity": 6.5,
+        "cultural_sensitivity": 4.5,
+        "affordability": 5.5,
+        "ad_free": 7,
+        "state_surveillance_resistance": 2,
+        "business_model_military_detachment": 4,
+        "funding_independance": 3,
+        "decolonial_alignment": 2,
+        "login_signup_compatibility": 7,
+        "user_friendliness": 8.5,
+        "ease_of_migration": 3,
+        "accessibility_disability": 6.5,
+        "leaders_diversity": 4,
+        "human_wellbeing_impact": 4
+      },
+      "alternatives": [
+        "immich"
+      ],
+      "draft": true
+    },
+    {
+      "id": "nextcloud",
+      "name": "Nextcloud",
+      "category": "Self-hosted suite",
+      "domains": [
+        "nextcloud.com"
+      ],
+      "score": 8.2,
+      "tags": [
+        "Open source",
+        "Self-hosted",
+        "Federated"
+      ],
+      "scores": {
+        "data_security": 7.5,
+        "privacy": 8,
+        "global_south_accessibility": 6.5,
+        "legal_compliance": 7.5,
+        "data_storage_location": 8,
+        "eco_friendliness": 7,
+        "language_inclusivity": 7.5,
+        "cultural_sensitivity": 7,
+        "affordability": 7.5,
+        "ad_free": 10,
+        "state_surveillance_resistance": 8,
+        "business_model_military_detachment": 9,
+        "funding_independance": 8,
+        "decolonial_alignment": 8,
+        "login_signup_compatibility": 7,
+        "user_friendliness": 7,
+        "ease_of_migration": 7,
+        "accessibility_disability": 7,
+        "leaders_diversity": 7,
+        "human_wellbeing_impact": 7.5
+      },
+      "alternatives": [],
+      "draft": true
+    },
+    {
+      "id": "immich",
+      "name": "Immich",
+      "category": "Self-hosted photos",
+      "domains": [
+        "immich.app"
+      ],
+      "score": 8.0,
+      "tags": [
+        "Open source",
+        "Self-hosted"
+      ],
+      "scores": {
+        "data_security": 7.5,
+        "privacy": 8,
+        "global_south_accessibility": 6.5,
+        "legal_compliance": 7.5,
+        "data_storage_location": 8,
+        "eco_friendliness": 7,
+        "language_inclusivity": 7.5,
+        "cultural_sensitivity": 7,
+        "affordability": 7.5,
+        "ad_free": 10,
+        "state_surveillance_resistance": 8,
+        "business_model_military_detachment": 9,
+        "funding_independance": 8,
+        "decolonial_alignment": 8,
+        "login_signup_compatibility": 7,
+        "user_friendliness": 7.5,
+        "ease_of_migration": 7,
+        "accessibility_disability": 7,
+        "leaders_diversity": 7,
+        "human_wellbeing_impact": 7.5
+      },
+      "alternatives": [],
+      "draft": true
+    },
+    {
+      "id": "proton",
+      "name": "Proton",
+      "category": "Encrypted suite",
+      "domains": [
+        "proton.me",
+        "protonmail.com"
+      ],
+      "score": 7.8,
+      "tags": [
+        "Encrypted",
+        "Swiss jurisdiction"
+      ],
+      "scores": {
+        "data_security": 7.5,
+        "privacy": 8,
+        "global_south_accessibility": 6.5,
+        "legal_compliance": 7.5,
+        "data_storage_location": 7.5,
+        "eco_friendliness": 7.5,
+        "language_inclusivity": 7.5,
+        "cultural_sensitivity": 7,
+        "affordability": 7.5,
+        "ad_free": 10,
+        "state_surveillance_resistance": 8.5,
+        "business_model_military_detachment": 9,
+        "funding_independance": 8,
+        "decolonial_alignment": 8,
+        "login_signup_compatibility": 7,
+        "user_friendliness": 7.5,
+        "ease_of_migration": 6.5,
+        "accessibility_disability": 7,
+        "leaders_diversity": 7,
+        "human_wellbeing_impact": 7.5
+      },
+      "alternatives": [],
+      "draft": true
+    },
+    {
+      "id": "eureka",
+      "name": "Eureka",
+      "category": "Email",
+      "domains": [
+        "eureka.example.org"
+      ],
+      "score": 7.5,
+      "tags": [
+        "Draft entry",
+        "Unverified"
+      ],
+      "scores": {
+        "data_security": 7.5,
+        "privacy": 8,
+        "global_south_accessibility": 6.5,
+        "legal_compliance": 7.5,
+        "data_storage_location": 8,
+        "eco_friendliness": 7,
+        "language_inclusivity": 7.5,
+        "cultural_sensitivity": 7,
+        "affordability": 7.5,
+        "ad_free": 10,
+        "state_surveillance_resistance": 8,
+        "business_model_military_detachment": 9,
+        "funding_independance": 8,
+        "decolonial_alignment": 8,
+        "login_signup_compatibility": 7,
+        "user_friendliness": 7,
+        "ease_of_migration": 6.5,
+        "accessibility_disability": 7,
+        "leaders_diversity": 7,
+        "human_wellbeing_impact": 7.5
+      },
+      "alternatives": [],
+      "draft": true
+    },
+    {
+      "id": "stalwart",
+      "name": "Stalwart Mail",
+      "category": "Self-hosted email",
+      "domains": [
+        "stalw.art"
+      ],
+      "score": 7.9,
+      "tags": [
+        "Open source",
+        "Self-hosted"
+      ],
+      "scores": {
+        "data_security": 7.5,
+        "privacy": 8,
+        "global_south_accessibility": 6.5,
+        "legal_compliance": 7.5,
+        "data_storage_location": 8,
+        "eco_friendliness": 7,
+        "language_inclusivity": 7.5,
+        "cultural_sensitivity": 7,
+        "affordability": 7.5,
+        "ad_free": 10,
+        "state_surveillance_resistance": 8,
+        "business_model_military_detachment": 9,
+        "funding_independance": 8,
+        "decolonial_alignment": 8,
+        "login_signup_compatibility": 7,
+        "user_friendliness": 7,
+        "ease_of_migration": 6,
+        "accessibility_disability": 7,
+        "leaders_diversity": 7,
+        "human_wellbeing_impact": 7.5
+      },
+      "alternatives": [],
+      "draft": true
+    },
+    {
+      "id": "authentik",
+      "name": "Authentik",
+      "category": "Identity / SSO",
+      "domains": [
+        "goauthentik.io"
+      ],
+      "score": 8.1,
+      "tags": [
+        "Open source",
+        "Self-hosted"
+      ],
+      "scores": {
+        "data_security": 7.5,
+        "privacy": 8,
+        "global_south_accessibility": 6.5,
+        "legal_compliance": 7.5,
+        "data_storage_location": 8,
+        "eco_friendliness": 7,
+        "language_inclusivity": 7.5,
+        "cultural_sensitivity": 7,
+        "affordability": 7.5,
+        "ad_free": 10,
+        "state_surveillance_resistance": 8,
+        "business_model_military_detachment": 9,
+        "funding_independance": 8,
+        "decolonial_alignment": 8,
+        "login_signup_compatibility": 7,
+        "user_friendliness": 6.5,
+        "ease_of_migration": 6.5,
+        "accessibility_disability": 7,
+        "leaders_diversity": 7,
+        "human_wellbeing_impact": 7.5
+      },
+      "alternatives": [],
+      "draft": true
+    }
+  ]
+}
